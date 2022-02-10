@@ -1,0 +1,30 @@
+
+name: ci 
+
+on: [push]
+
+jobs:
+  check:
+   runs-on: ubuntu-latest
+   steps:
+      - uses: actions/checkout@v2
+
+      - name: Install nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      - name: fmt
+        run: cargo fmt --all -- --check
+
+      - name: clippy
+        run: cargo clippy -- -D warnings
+
+      - name: test
+        run: cargo test
+
+      - name: build
+        run: cargo build --release --all-features 
