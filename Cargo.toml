@@ -1,6 +1,6 @@
 [package]
 name = "gcm"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 authors = ["Makuza Mugabo Verite <mugaboverite@gmail.com>"]
 license = "MIT"
