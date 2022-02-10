@@ -9,7 +9,7 @@ Conventional git commit messages done right
 download to your profile from [here](https://github.com/veritem/gcm/releases)
 
 
-## [MIT](./LICENSE) Licence &copy; 2022 
+[MIT](./LICENSE) Licence &copy; 2022 
 
 
 
