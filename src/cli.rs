@@ -13,7 +13,7 @@ pub fn new_commit() -> String {
     }
     commit.push_str(&format!(": {comm_desc}"));
 
-    if comm_body.len() > 0 {
+    if comm_body.len() > 2 {
         commit.push_str(&format!("\n\n{comm_body}"));
     }
 
@@ -22,25 +22,37 @@ pub fn new_commit() -> String {
 
 fn commit_type() -> &'static str {
     let options = vec![
-        "feat", "fix", "docs", "style", "perf", "refactor", "revert", "style", "test", "chore",
+        "feat", "fix", "docs", "style", "perf", "refactor", "test", "chore",
+    ];
+
+    let options_with_desc = vec![
+        "feat: A new feature",
+        "fix: A bug fix",
+        "docs: Documentation only changes",
+        "style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)",
+        "perf: A code change that improves performance",
+        "refactor: A code change that neither fixes a bug or adds a feature",
+        "test: Adding missing tests",
+        "chore: Changes to the build process or auxiliary tools and libraries such as documentation generation",
     ];
 
     let selection = Select::with_theme(&ColorfulTheme::default())
         .with_prompt("Select type of commit")
         .default(0)
-        .items(&options)
+        .items(&options_with_desc)
         .interact_opt()
         .unwrap();
 
     if let Some(selected_opt) = selection {
         return options[selected_opt];
     }
+
     options[options.len() - 1]
 }
 
 fn commit_scope() -> String {
     let input: String = Input::with_theme(&ColorfulTheme::default())
-        .with_prompt("scope")
+        .with_prompt("scope (optional)")
         .allow_empty(true)
         .interact_text()
         .unwrap();
@@ -60,7 +72,7 @@ fn commit_description() -> String {
 
 fn commit_body() -> String {
     let input: String = Input::with_theme(&ColorfulTheme::default())
-        .with_prompt("body")
+        .with_prompt("body (optional)")
         .allow_empty(true)
         .interact_text()
         .unwrap();
