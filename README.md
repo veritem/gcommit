@@ -1,5 +1,6 @@
-### gcm
-
+## gcm
+[![ci](https://github.com/veritem/gcm/actions/workflows/ci.yml/badge.svg)](https://github.com/veritem/gcm/actions/workflows/ci.yml)
+![release](https://shields.io/github/v/release/veritem/gcm)
 
 Conventional git commit messages done right
 
