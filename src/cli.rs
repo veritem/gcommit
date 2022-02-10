@@ -6,7 +6,7 @@ pub fn new_commit() -> String {
     let comm_desc = commit_description();
     let comm_body = commit_body();
 
-    let mut commit = format!("{comm_type}");
+    let mut commit = comm_type.to_string();
 
     if comm_scope.len() > 2 {
         commit.push_str(&format!("({comm_scope})"))
