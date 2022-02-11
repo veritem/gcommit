@@ -6,8 +6,9 @@ Conventional git commit messages done right
 
 ![Preview](./assets/preview.png)
 
+### Getting started
 
-download to your profile from [here](https://github.com/veritem/gcm/releases)
+download to your platform binary from [releases](https://github.com/veritem/gcm/releases)
 
 
 [MIT](./LICENSE) Licence &copy; 2022 
