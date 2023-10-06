@@ -8,7 +8,8 @@ pub fn build_commit_message(
         match change {
             Some(s) => commit_message.push_str(s),
             None => {
-                panic!("Commit classification  is required to maintain git commit conventions")
+                println!("Commit classification  is required to maintain git commit conventions");
+                return None
             }
         }
 
@@ -23,7 +24,8 @@ pub fn build_commit_message(
                 commit_message.push_str(s)
             }
             None => {
-                panic!("You didn't add a commit message")
+                println!("You didn't add a commit message");
+                return None
             }
         }
     }
