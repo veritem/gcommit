@@ -1,0 +1,8 @@
+classes:
+  feat: 'A new feature'
+  fix:  'Used when you have fixed a bug'
+
+scopes:
+    - web
+    - api
+    - docs

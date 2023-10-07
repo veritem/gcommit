@@ -3,6 +3,8 @@ mod cli;
 mod utils;
 use std::process::Command;
 
+use crate::utils::create_and_or_read_config;
+
 #[derive(Parser, Debug)]
 #[command(author = "Regis NDIZIHIWE", version ="1.0.0", about, long_about = None)]
 struct Args {
@@ -18,6 +20,8 @@ struct Args {
 }
 
 fn main() {
+    create_and_or_read_config();
+    panic!("Stop by here");
     let git_status_ouput = Command::new("git")
         .args(&["status"])
         .output()
