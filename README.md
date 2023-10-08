@@ -12,6 +12,3 @@ download to your platform binary from [releases](https://github.com/veritem/gcm/
 
 
 [MIT](./LICENSE) Licence &copy; 2022 
-
-
-

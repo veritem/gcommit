@@ -20,20 +20,22 @@ pub fn new_commit() -> String {
     commit
 }
 
+
+
 fn commit_type() -> &'static str {
     let options = vec![
         "feat", "fix", "docs", "style", "perf", "refactor", "test", "chore",
     ];
 
     let options_with_desc = vec![
-        "feat: A new feature",
-        "fix: A bug fix",
-        "docs: Documentation only changes",
-        "style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)",
-        "perf: A code change that improves performance",
-        "refactor: A code change that neither fixes a bug or adds a feature",
-        "test: Adding missing tests",
-        "chore: Changes to the build process or auxiliary tools and libraries such as documentation generation",
+        "feat:      A new feature",
+        "fix:       A bug fix",
+        "docs:      Documentation only changes",
+        "style:     Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)",
+        "perf:      A code change that improves performance",
+        "refactor:  A code change that neither fixes a bug or adds a feature",
+        "test:      Adding missing tests",
+        "chore:     Changes to the build process or auxiliary tools and libraries such as documentation generation",
     ];
 
     let selection = Select::with_theme(&ColorfulTheme::default())
@@ -60,6 +62,7 @@ fn commit_scope() -> String {
     input
 }
 
+
 fn commit_description() -> String {
     let input: String = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("description")
@@ -80,12 +83,13 @@ fn commit_body() -> String {
     input
 }
 
+
+
 fn _commit_footer() -> String {
     let input: String = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("footer")
         .allow_empty(true)
         .interact_text()
         .unwrap();
-
     input
 }

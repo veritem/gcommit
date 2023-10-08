@@ -1,8 +1,21 @@
+use clap::Parser;
+mod cli;
+mod utils;
 use std::process::Command;
 
-use clap::{App, AppSettings};
+#[derive(Parser, Debug)]
+#[command(author = "Regis NDIZIHIWE", version ="1.0.0", about, long_about = None)]
+struct Args {
+    /// Name of the person to greet
+    #[arg(short, long)]
+    class: Option<String>,
+    /// Number of times to greet
+    #[arg(short, long)]
+    scope: Option<String>,
 
-mod cli;
+    #[arg(short, long)]
+    message: Option<String>,
+}
 
 fn main() {
     let git_status_ouput = Command::new("git")
@@ -29,32 +42,16 @@ fn main() {
         return;
     }
 
-    let matches = App::new("gcm")
-        .version("0.1.0")
-        .author("Makuza Mugabo Verite")
-        .about("Git commits utility")
-        .subcommand(
-            App::new("b")
-                .about("Breaking changes")
-                .setting(AppSettings::ArgRequiredElseHelp),
-        )
-        .get_matches();
+    let args = Args::parse();
+    let single_line_commit = utils::build_commit_message(&args.scope, &args.class, &args.message);
 
-    match matches.subcommand() {
-        Some(("b", _sub_matches)) => {
-            println!("TODO: This is still a work in progress",);
-        }
-        _ => {
-            let commit_message = cli::new_commit();
-
-            if git_status_stdout.contains("Changes to be committed") {
-                let commit = Command::new("git")
-                    .args(&["commit", "-m", &commit_message])
-                    .output()
-                    .expect("failed to execute process");
-
-                println!("{}", String::from_utf8_lossy(&commit.stdout));
-            }
-        }
-    }
+    let commit_message: String = match single_line_commit {
+        Some(s) => s,
+        None => cli::new_commit(),
+    };
+    let commit_output = Command::new("git")
+        .args(&["commit", "-m", &commit_message])
+        .output()
+        .expect("failed to execute process");
+    println!("{}", String::from_utf8_lossy(&commit_output.stdout));
 }
