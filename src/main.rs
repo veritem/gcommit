@@ -7,13 +7,14 @@ use crate::utils::create_and_or_read_config;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
-    /// Name of the person to greet
+    /// Classification or type of commit
     #[arg(short, long)]
     class: Option<String>,
-    /// Number of times to greet
+    /// Project scope where changes were made
     #[arg(short, long)]
     scope: Option<String>,
 
+    ///  Commit message
     #[arg(short, long)]
     message: Option<String>,
 }
