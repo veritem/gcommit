@@ -20,8 +20,7 @@ struct Args {
 }
 
 fn main() {
-    create_and_or_read_config();
-    panic!("Stop by here");
+
     let git_status_ouput = Command::new("git")
         .args(&["status"])
         .output()
