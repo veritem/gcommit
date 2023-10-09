@@ -1,7 +1,5 @@
 use std::collections::HashMap;
-
 use dialoguer::{theme::ColorfulTheme, Input, Select};
-
 use crate::utils::GcmConfig;
 
 pub fn new_commit(config: &GcmConfig) -> String {
