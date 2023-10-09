@@ -12,11 +12,18 @@ pub fn build_commit_message(
     scope: &Option<String>,
     change: &Option<String>,
     message: &Option<String>,
+    config: &GcmConfig,
 ) -> Option<String> {
     let mut commit_message: String = "".to_owned();
     {
         match change {
-            Some(s) => commit_message.push_str(s),
+            Some(s) => {
+                if config.classes.contains_key(s) == true {
+                    commit_message.push_str(s)
+                } else {
+                    panic!("Commit type not in configuration file")
+                }
+            }
             None => {
                 println!("Commit classification  is required to maintain git commit conventions");
                 return None;
@@ -24,7 +31,13 @@ pub fn build_commit_message(
         }
 
         match scope {
-            Some(s) => commit_message.push_str(format!("({})", s).as_str()),
+            Some(s) => {
+                if config.scopes.contains(s) == true {
+                    commit_message.push_str(format!("({})", s).as_str())
+                } else {
+
+                }
+            }
             None => {}
         }
 

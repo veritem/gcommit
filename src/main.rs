@@ -7,7 +7,7 @@ use crate::utils::create_and_or_read_config;
 
 #[derive(Parser, Debug)]
 #[command(author = "Regis NDIZIHIWE", version ="1.0.0", about, long_about = None)]
-struct Args {
+pub struct Args {
     /// Name of the person to greet
     #[arg(short, long)]
     class: Option<String>,
@@ -46,7 +46,7 @@ fn main() {
     }
 
     let args = Args::parse();
-    let single_line_commit = utils::build_commit_message(&args.scope, &args.class, &args.message);
+    let single_line_commit = utils::build_commit_message(&args.scope, &args.class, &args.message, &gcm_config);
 
     let commit_message: String = match single_line_commit {
         Some(s) => s,
