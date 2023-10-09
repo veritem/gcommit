@@ -1,6 +1,9 @@
-use std::{collections::HashMap, fs};
-use yaml_rust::{YamlEmitter, YamlLoader};
-struct GcmConfig {
+use std::fs::File;
+use std::{collections::HashMap, fs, io::Write};
+use yaml_rust::YamlLoader;
+
+#[derive(Debug)]
+pub struct GcmConfig {
     classes: HashMap<String, String>,
     scopes: Vec<String>,
 }
@@ -47,17 +50,85 @@ pub fn build_commit_message(
     result
 }
 
-pub fn create_and_or_read_config() {
-    let config_file = fs::read_to_string(".gcmconf.yml");
-    
-    let mut gcm_config : GcmConfig  ;
+pub fn create_and_or_read_config() -> GcmConfig {
+    let mut config: GcmConfig = GcmConfig {
+        classes: HashMap::new(),
+        scopes: Vec::new(),
+    };
+
+    let config_file = fs::read_to_string(".gcmconfig.yml");
+
     match config_file {
         Ok(value) => {
-            let gcm_config = YamlLoader::load_from_str(&value).unwrap();
-            for k in gcm_config {
-                println!("\n\n\n{:?}\n\n\n" , k );
+            let loaded_config = YamlLoader::load_from_str(&value).unwrap();
+            for k in loaded_config.iter() {
+                if k["classes"].as_hash().into_iter().len() == 0 {
+                    panic!("No classes added in your .gcmconfig.yml file")
+                }
+
+                for (key, value) in k["classes"].as_hash().unwrap().iter() {
+                    config.classes.insert(
+                        key.clone().into_string().unwrap(),
+                        value.clone().into_string().unwrap(),
+                    );
+                }
+                if k["scopes"].as_vec().into_iter().len() == 0 {
+                    panic!("No scopes available in your .gcmconfig.ml file")
+                } else {
+                    for scope in k["scopes"].as_vec().unwrap().iter() {
+                        config.scopes.push(scope.clone().into_string().unwrap());
+                    }
+                }
             }
         }
-        Err(error) => panic!("{:?}", error),
+        Err(_error) => {
+            println!("Found no .gcmconfig.yml, creating a default one...");
+            config = load_default_config();
+        }
     }
+
+    config
+}
+
+fn load_default_config() -> GcmConfig {
+    let default_config: GcmConfig = GcmConfig {
+        classes: HashMap::from([
+            (String::from("feat"), String::from("A new feature")),
+            (String::from("fix"), String::from("A bug fix")),
+            (String::from("docs"), String::from("Documentation only changes")),
+            (String::from("style"), String::from("Changes that do not affect the meaning of the code")),
+            (String::from("perf"), String::from("A code change that improves performance")),
+            (String::from("refactor"), String::from("A code change that neither fixes a bug or adds a feature")),
+            (String::from("test"), String::from("Adding missing tests")),
+            (String::from("chore"), String::from("Changes to the build process or auxiliary tools and libraries such as documentation generation")),
+        ]),
+        scopes: vec![
+            String::from("web"),
+            String::from("api"),
+            String::from("docs"),
+        ],
+    };
+    let default_config_file = r#"
+    classes:
+      feat:  "A new feature"
+      fix:   "A bug fix"
+      docs:  "Documentation only changes"
+      style: "Changes that do not affect the meaning of the code"
+      perf:  "A code change that improves performance"
+      refactor: "A code change that neither fixes a bug or adds a feature"
+      test:  "Adding missing tests"
+      chore:  "Changes to the build process or auxiliary tools and libraries "
+
+    scopes:
+      - web
+      - api
+      - docs
+
+    "#;
+    match File::create(".gcmconfig.yml") {
+        Ok(mut file) => &file.write_all(default_config_file.as_bytes()),
+        Err(error) => panic!("{:?}", error),
+    };
+
+    default_config
 }

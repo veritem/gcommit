@@ -20,7 +20,8 @@ struct Args {
 }
 
 fn main() {
-
+    let gcm_config = create_and_or_read_config();
+    println!("{:?}", gcm_config);
     let git_status_ouput = Command::new("git")
         .args(&["status"])
         .output()
