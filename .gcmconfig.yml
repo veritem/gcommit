@@ -4,7 +4,6 @@ classes:
   docs: "Documentation only changes"
   style: "Changes that do not affect the meaning of the code"
   perf: "A code change that improves performance"
-  refactor: "A code change that neither fixes a bug or adds a feature"
   test: "Adding missing tests"
   chore: "Changes to the build process or auxiliary tools and libraries "
 

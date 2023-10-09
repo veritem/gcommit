@@ -21,7 +21,6 @@ struct Args {
 
 fn main() {
     let gcm_config = create_and_or_read_config();
-    println!("{:?}", gcm_config);
     let git_status_ouput = Command::new("git")
         .args(&["status"])
         .output()
@@ -51,7 +50,7 @@ fn main() {
 
     let commit_message: String = match single_line_commit {
         Some(s) => s,
-        None => cli::new_commit(),
+        None => cli::new_commit(&gcm_config),
     };
     let commit_output = Command::new("git")
         .args(&["commit", "-m", &commit_message])

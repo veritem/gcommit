@@ -4,8 +4,8 @@ use yaml_rust::YamlLoader;
 
 #[derive(Debug)]
 pub struct GcmConfig {
-    classes: HashMap<String, String>,
-    scopes: Vec<String>,
+    pub classes: HashMap<String, String>,
+    pub scopes: Vec<String>,
 }
 
 pub fn build_commit_message(
@@ -98,7 +98,6 @@ fn load_default_config() -> GcmConfig {
             (String::from("docs"), String::from("Documentation only changes")),
             (String::from("style"), String::from("Changes that do not affect the meaning of the code")),
             (String::from("perf"), String::from("A code change that improves performance")),
-            (String::from("refactor"), String::from("A code change that neither fixes a bug or adds a feature")),
             (String::from("test"), String::from("Adding missing tests")),
             (String::from("chore"), String::from("Changes to the build process or auxiliary tools and libraries such as documentation generation")),
         ]),
@@ -115,7 +114,6 @@ fn load_default_config() -> GcmConfig {
       docs:  "Documentation only changes"
       style: "Changes that do not affect the meaning of the code"
       perf:  "A code change that improves performance"
-      refactor: "A code change that neither fixes a bug or adds a feature"
       test:  "Adding missing tests"
       chore:  "Changes to the build process or auxiliary tools and libraries "
 
