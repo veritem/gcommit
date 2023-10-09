@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::{collections::HashMap, fs, io::Write};
+use std::process::Command;
 use yaml_rust::YamlLoader;
 
 #[derive(Debug)]
@@ -35,7 +36,7 @@ pub fn build_commit_message(
                 if config.scopes.contains(s) == true {
                     commit_message.push_str(format!("({})", s).as_str())
                 } else {
-
+                    panic!("Scope not in configuration file")
                 }
             }
             None => {}
@@ -43,12 +44,14 @@ pub fn build_commit_message(
 
         match message {
             Some(s) => {
-                commit_message.push_str(":");
+                if s.trim().len() == 0 {
+                    panic!("Invalid commit message");
+                }
+                commit_message.push_str(": ");
                 commit_message.push_str(s)
             }
             None => {
-                println!("You didn't add a commit message");
-                return None;
+                panic!("You didn't add a commit message");
             }
         }
     }
@@ -64,6 +67,8 @@ pub fn build_commit_message(
 }
 
 pub fn create_and_or_read_config() -> GcmConfig {
+    validate_git_project();
+    
     let mut config: GcmConfig = GcmConfig {
         classes: HashMap::new(),
         scopes: Vec::new(),
@@ -142,4 +147,30 @@ fn load_default_config() -> GcmConfig {
     };
 
     default_config
+}
+
+pub fn validate_git_project() {
+    let git_status_ouput = Command::new("git")
+        .args(&["status"])
+        .output()
+        .expect("failed to execute process");
+
+    if git_status_ouput.status.code() == Some(128) {
+        println!("This is not a git project make sure to initialize it\nUse git init");
+        return;
+    }
+
+    let git_status_stdout = String::from_utf8_lossy(&git_status_ouput.stdout);
+
+    if git_status_stdout.contains("no changes added to commit")
+        || git_status_stdout.contains("nothing added to commit")
+    {
+        println!("Some changes were not added to commit");
+        return;
+    }
+
+    if git_status_stdout.contains("nothing to commit, working tree clean") {
+        println!("No changes were made to the project");
+        return;
+    }
 }
