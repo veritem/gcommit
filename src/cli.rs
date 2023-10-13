@@ -1,25 +1,23 @@
-use std::collections::HashMap;
-use dialoguer::{theme::ColorfulTheme, Input, Select};
 use crate::utils::GcmConfig;
+use dialoguer::{theme::ColorfulTheme, Input, Select};
+use std::collections::HashMap;
 
 pub fn new_commit(config: &GcmConfig) -> String {
     let comm_type = commit_type(config.classes.clone());
-    
+
+    let empty_scope = String::from("");
+
     let comm_scope = match commit_scope() {
-        Some(scope) => {
-            if config.scopes.contains(&scope) == true {
-                scope
-            } else if scope.len() != 0 {
-                println!("That scope is not known in config file, gcm will take it as no scope provided");
-                String::from("")
-            } else {
-                String::from("")   
+        Some(scope) => match config.scopes.contains(&scope) {
+            true => scope,
+            false => {
+                println!("Unknown scope, gcm will take it as no scope provided");
+                empty_scope
             }
-        }
-        _ => {
-            String::from("")
-        }
+        },
+        None => empty_scope,
     };
+
     let comm_desc = commit_description();
     let comm_body = commit_body();
 
@@ -35,7 +33,6 @@ pub fn new_commit(config: &GcmConfig) -> String {
     }
     commit
 }
-
 fn commit_type(classes: HashMap<String, String>) -> String {
     let mut options: Vec<String> = vec![];
     let mut classes_with_desc: Vec<String> = vec![];

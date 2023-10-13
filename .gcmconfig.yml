@@ -6,6 +6,7 @@ classes:
   perf:   "A code change that improves performance"
   test:   "Adding missing tests"
   chore:  "Changes to the build process or auxiliary tools and libraries "
+  refact: "Rewriting code, improving understandability, etc."
 
 scopes:
   - cli

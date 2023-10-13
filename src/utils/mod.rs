@@ -1,6 +1,6 @@
 use std::fs::File;
-use std::{collections::HashMap, fs, io::Write};
 use std::process::Command;
+use std::{collections::HashMap, fs, io::Write};
 use yaml_rust::YamlLoader;
 
 #[derive(Debug)]
@@ -67,8 +67,6 @@ pub fn build_commit_message(
 }
 
 pub fn create_and_or_read_config() -> GcmConfig {
-    validate_git_project();
-    
     let mut config: GcmConfig = GcmConfig {
         classes: HashMap::new(),
         scopes: Vec::new(),
@@ -109,22 +107,6 @@ pub fn create_and_or_read_config() -> GcmConfig {
 }
 
 fn load_default_config() -> GcmConfig {
-    let default_config: GcmConfig = GcmConfig {
-        classes: HashMap::from([
-            (String::from("feat"), String::from("A new feature")),
-            (String::from("fix"), String::from("A bug fix")),
-            (String::from("docs"), String::from("Documentation only changes")),
-            (String::from("style"), String::from("Changes that do not affect the meaning of the code")),
-            (String::from("perf"), String::from("A code change that improves performance")),
-            (String::from("test"), String::from("Adding missing tests")),
-            (String::from("chore"), String::from("Changes to the build process or auxiliary tools and libraries such as documentation generation")),
-        ]),
-        scopes: vec![
-            String::from("web"),
-            String::from("api"),
-            String::from("docs"),
-        ],
-    };
     let default_config_file = r#"
     classes:
       feat:  "A new feature"
@@ -134,17 +116,19 @@ fn load_default_config() -> GcmConfig {
       perf:  "A code change that improves performance"
       test:  "Adding missing tests"
       chore:  "Changes to the build process or auxiliary tools and libraries "
-
     scopes:
       - web
       - api
       - docs
-
     "#;
+
     match File::create(".gcmconfig.yml") {
         Ok(mut file) => &file.write_all(default_config_file.as_bytes()),
         Err(error) => panic!("{:?}", error),
     };
+
+    // re-read the file again to load the default configurations.
+    let default_config = create_and_or_read_config();
 
     default_config
 }
@@ -156,21 +140,16 @@ pub fn validate_git_project() {
         .expect("failed to execute process");
 
     if git_status_ouput.status.code() == Some(128) {
-        println!("This is not a git project make sure to initialize it\nUse git init");
-        return;
+        panic!("This is not a git project make sure to initialize it\nUse git init");
     }
 
     let git_status_stdout = String::from_utf8_lossy(&git_status_ouput.stdout);
 
-    if git_status_stdout.contains("no changes added to commit")
-        || git_status_stdout.contains("nothing added to commit")
-    {
-        println!("Some changes were not added to commit");
-        return;
+    if git_status_stdout.contains("no changes added to commit") {
+        panic!("Some changes were not added to commit");
     }
 
     if git_status_stdout.contains("nothing to commit, working tree clean") {
-        println!("No changes were made to the project");
-        return;
+        panic!("No changes were made to the project");
     }
 }
