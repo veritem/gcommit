@@ -1,8 +1,8 @@
 use clap::Parser;
 mod cli;
 mod utils;
-use std::process::Command;
 use crate::utils::{create_and_or_read_config, validate_git_project};
+use std::process::Command;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -20,7 +20,6 @@ pub struct Args {
 }
 
 fn main() {
-
     let args = Args::parse();
     let gcm_config = create_and_or_read_config();
     validate_git_project();
