@@ -19,7 +19,7 @@ pub fn build_commit_message(
     {
         match change {
             Some(s) => {
-                if config.classes.contains_key(s) == true {
+                if config.classes.contains_key(s) {
                     commit_message.push_str(s)
                 } else {
                     panic!("Commit type not in configuration file")
@@ -33,7 +33,7 @@ pub fn build_commit_message(
 
         match scope {
             Some(s) => {
-                if config.scopes.contains(s) == true {
+                if config.scopes.contains(s) {
                     commit_message.push_str(format!("({})", s).as_str())
                 } else {
                     panic!("Scope not in configuration file")
@@ -44,7 +44,7 @@ pub fn build_commit_message(
 
         match message {
             Some(s) => {
-                if s.trim().len() == 0 {
+                if s.trim().is_empty() {
                     panic!("Invalid commit message");
                 }
                 commit_message.push_str(": ");
@@ -57,13 +57,12 @@ pub fn build_commit_message(
     }
 
     println!("{}", commit_message.trim().len());
-    let result = if commit_message.trim().len() == 0 {
+
+    if commit_message.trim().is_empty() {
         None
     } else {
-        Some(String::from(commit_message))
-    };
-
-    result
+        Some(commit_message)
+    }
 }
 
 pub fn create_and_or_read_config() -> GcmConfig {
@@ -121,9 +120,8 @@ scopes:
                 };
 
                 // re-read the file again to load the default configurations.
-                let default_config = create_and_or_read_config();
 
-                default_config
+                create_and_or_read_config()
             }
         }
     }
@@ -133,7 +131,7 @@ scopes:
 
 pub fn validate_git_project() {
     let git_status_ouput = Command::new("git")
-        .args(&["status"])
+        .args(["status"])
         .output()
         .expect("failed to execute process");
 

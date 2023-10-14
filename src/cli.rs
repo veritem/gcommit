@@ -21,7 +21,7 @@ pub fn new_commit(config: &GcmConfig) -> String {
     let comm_desc = commit_description();
     let comm_body = commit_body();
 
-    let mut commit = comm_type.to_string();
+    let mut commit = comm_type;
 
     if comm_scope.len() > 2 {
         commit.push_str(&format!("({comm_scope})"))
@@ -61,7 +61,7 @@ fn commit_scope() -> Option<String> {
         .allow_empty(true)
         .interact_text()
         .unwrap();
-    Some(String::from(input))
+    Some(input)
 }
 
 fn commit_description() -> String {

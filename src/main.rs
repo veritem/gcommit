@@ -31,7 +31,7 @@ fn main() {
         None => cli::new_commit(&gcm_config),
     };
     let commit_output = Command::new("git")
-        .args(&["commit", "-m", &commit_message])
+        .args(["commit", "-m", &commit_message])
         .output()
         .expect("failed to execute process");
     println!("{}", String::from_utf8_lossy(&commit_output.stdout));
