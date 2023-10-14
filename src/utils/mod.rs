@@ -130,16 +130,16 @@ scopes:
 }
 
 pub fn validate_git_project() {
-    let git_status_ouput = Command::new("git")
+    let git_status_output = Command::new("git")
         .args(["status"])
         .output()
         .expect("failed to execute process");
 
-    if git_status_ouput.status.code() == Some(128) {
+    if git_status_output.status.code() == Some(128) {
         panic!("This is not a git project make sure to initialize it\nUse git init");
     }
 
-    let git_status_stdout = String::from_utf8_lossy(&git_status_ouput.stdout);
+    let git_status_stdout = String::from_utf8_lossy(&git_status_output.stdout);
 
     if git_status_stdout.contains("no changes added to commit") {
         panic!("Some changes were not added to commit");
