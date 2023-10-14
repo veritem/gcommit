@@ -99,38 +99,36 @@ pub fn create_and_or_read_config() -> GcmConfig {
         }
         Err(_error) => {
             println!("Found no .gcmconfig.yml, creating a default one...");
-            config = load_default_config();
+            config = {
+                let default_config_file = r#"
+classes:
+  feat:  "A new feature"
+  fix:   "A bug fix"
+  docs:  "Documentation only changes"
+  style: "Changes that do not affect the meaning of the code"
+  perf:  "A code change that improves performance"
+  test:  "Adding missing tests"
+  chore:  "Changes to the build process or auxiliary tools and libraries "
+scopes:
+  - web
+  - api
+  - docs
+                "#;
+
+                match File::create(".gcmconfig.yml") {
+                    Ok(mut file) => &file.write_all(default_config_file.as_bytes()),
+                    Err(error) => panic!("{:?}", error),
+                };
+
+                // re-read the file again to load the default configurations.
+                let default_config = create_and_or_read_config();
+
+                default_config
+            }
         }
     }
 
     config
-}
-
-fn load_default_config() -> GcmConfig {
-    let default_config_file = r#"
-    classes:
-      feat:  "A new feature"
-      fix:   "A bug fix"
-      docs:  "Documentation only changes"
-      style: "Changes that do not affect the meaning of the code"
-      perf:  "A code change that improves performance"
-      test:  "Adding missing tests"
-      chore:  "Changes to the build process or auxiliary tools and libraries "
-    scopes:
-      - web
-      - api
-      - docs
-    "#;
-
-    match File::create(".gcmconfig.yml") {
-        Ok(mut file) => &file.write_all(default_config_file.as_bytes()),
-        Err(error) => panic!("{:?}", error),
-    };
-
-    // re-read the file again to load the default configurations.
-    let default_config = create_and_or_read_config();
-
-    default_config
 }
 
 pub fn validate_git_project() {
