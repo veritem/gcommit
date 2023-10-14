@@ -1,8 +1,8 @@
-use crate::utils::GcmConfig;
+use crate::utils::GCommitConfig;
 use dialoguer::{theme::ColorfulTheme, Input, Select};
 use std::collections::HashMap;
 
-pub fn new_commit(config: &GcmConfig) -> String {
+pub fn new_commit(config: &GCommitConfig) -> String {
     let comm_type = commit_type(config.classes.clone());
 
     let empty_scope = String::from("");
@@ -11,7 +11,7 @@ pub fn new_commit(config: &GcmConfig) -> String {
         Some(scope) => match config.scopes.contains(&scope) {
             true => scope,
             false => {
-                println!("Unknown scope, gcm will take it as no scope provided");
+                println!("Unknown scope, gcommit will take it as no scope provided");
                 empty_scope
             }
         },

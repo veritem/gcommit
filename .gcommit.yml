@@ -1,0 +1,14 @@
+
+classes:
+  feat:  "A new feature"
+  fix:   "A bug fix"
+  docs:  "Documentation only changes"
+  style: "Changes that do not affect the meaning of the code"
+  perf:  "A code change that improves performance"
+  test:  "Adding missing tests"
+  chore:  "Changes to the build process or auxiliary tools and libraries "
+scopes:
+  - web
+  - api
+  - docs
+                
