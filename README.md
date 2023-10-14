@@ -7,7 +7,7 @@ Conventional git commit messages done right
 1. download to your platform binary from [releases](https://github.com/veritem/gcommit/releases)
 2. basic commands 
 ```bash
-$ gcommit   // starts the commit dialog, using data in .gcommitconfig.yml or creates one if not available 🌟
+$ gcommit   // starts the commit dialog, using data in .gcommit.yml or creates one if not available 🌟
 ```
 ```bash
 $ gcommit --help  // Prints the help and how to use the cli.
@@ -19,7 +19,7 @@ $ gcommit -c <type> -s <scope> -m <commit_message>
 4. Enjoy!
 
 ### Features
-- Configurable: Devs can config how their commits should look like in `.gcommitconfig.yml` file
+- Configurable: Devs can config how their commits should look like in `.gcommit.yml` file
 - Validation:  types or scopes that can be added in commits are the ones in the config file only
 - Commit dialog: use the commit dialog ui to make pro commit message
 - Simplicity:  So simple to make a pro commit message
