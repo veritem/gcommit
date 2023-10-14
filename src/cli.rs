@@ -1,8 +1,23 @@
+use crate::utils::GcmConfig;
 use dialoguer::{theme::ColorfulTheme, Input, Select};
+use std::collections::HashMap;
 
-pub fn new_commit() -> String {
-    let comm_type = commit_type();
-    let comm_scope = commit_scope();
+pub fn new_commit(config: &GcmConfig) -> String {
+    let comm_type = commit_type(config.classes.clone());
+
+    let empty_scope = String::from("");
+
+    let comm_scope = match commit_scope() {
+        Some(scope) => match config.scopes.contains(&scope) {
+            true => scope,
+            false => {
+                println!("Unknown scope, gcm will take it as no scope provided");
+                empty_scope
+            }
+        },
+        None => empty_scope,
+    };
+
     let comm_desc = commit_description();
     let comm_body = commit_body();
 
@@ -16,52 +31,38 @@ pub fn new_commit() -> String {
     if comm_body.len() > 2 {
         commit.push_str(&format!("\n\n{comm_body}"));
     }
-
     commit
 }
-
-
-
-fn commit_type() -> &'static str {
-    let options = vec![
-        "feat", "fix", "docs", "style", "perf", "refactor", "test", "chore",
-    ];
-
-    let options_with_desc = vec![
-        "feat:      A new feature",
-        "fix:       A bug fix",
-        "docs:      Documentation only changes",
-        "style:     Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)",
-        "perf:      A code change that improves performance",
-        "refactor:  A code change that neither fixes a bug or adds a feature",
-        "test:      Adding missing tests",
-        "chore:     Changes to the build process or auxiliary tools and libraries such as documentation generation",
-    ];
-
-    let selection = Select::with_theme(&ColorfulTheme::default())
-        .with_prompt("Select type of commit")
-        .default(0)
-        .items(&options_with_desc)
-        .interact_opt()
-        .unwrap();
-
-    if let Some(selected_opt) = selection {
-        return options[selected_opt];
+fn commit_type(classes: HashMap<String, String>) -> String {
+    let mut options: Vec<String> = vec![];
+    let mut classes_with_desc: Vec<String> = vec![];
+    for (k, v) in classes {
+        let formatted_string = format!("{}\t•\t{}", k, v);
+        classes_with_desc.push(formatted_string);
+        options.push(k);
     }
 
-    options[options.len() - 1]
+    let selection = match Select::with_theme(&ColorfulTheme::default())
+        .with_prompt("Select type of commit")
+        .default(0)
+        .items(&classes_with_desc)
+        .interact_opt()
+        .unwrap()
+    {
+        Some(val) => &options[val],
+        None => &options[0],
+    };
+    selection.to_string()
 }
 
-fn commit_scope() -> String {
+fn commit_scope() -> Option<String> {
     let input: String = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("scope (optional)")
         .allow_empty(true)
         .interact_text()
         .unwrap();
-
-    input
+    Some(String::from(input))
 }
-
 
 fn commit_description() -> String {
     let input: String = Input::with_theme(&ColorfulTheme::default())
@@ -82,8 +83,6 @@ fn commit_body() -> String {
 
     input
 }
-
-
 
 fn _commit_footer() -> String {
     let input: String = Input::with_theme(&ColorfulTheme::default())
