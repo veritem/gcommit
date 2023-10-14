@@ -4,7 +4,7 @@ use std::{collections::HashMap, fs, io::Write};
 use yaml_rust::YamlLoader;
 
 #[derive(Debug)]
-pub struct GcmConfig {
+pub struct GCommitConfig {
     pub classes: HashMap<String, String>,
     pub scopes: Vec<String>,
 }
@@ -13,13 +13,13 @@ pub fn build_commit_message(
     scope: &Option<String>,
     change: &Option<String>,
     message: &Option<String>,
-    config: &GcmConfig,
+    config: &GCommitConfig,
 ) -> Option<String> {
     let mut commit_message: String = "".to_owned();
     {
         match change {
             Some(s) => {
-                if config.classes.contains_key(s) == true {
+                if config.classes.contains_key(s) {
                     commit_message.push_str(s)
                 } else {
                     panic!("Commit type not in configuration file")
@@ -33,7 +33,7 @@ pub fn build_commit_message(
 
         match scope {
             Some(s) => {
-                if config.scopes.contains(s) == true {
+                if config.scopes.contains(s) {
                     commit_message.push_str(format!("({})", s).as_str())
                 } else {
                     panic!("Scope not in configuration file")
@@ -44,7 +44,7 @@ pub fn build_commit_message(
 
         match message {
             Some(s) => {
-                if s.trim().len() == 0 {
+                if s.trim().is_empty() {
                     panic!("Invalid commit message");
                 }
                 commit_message.push_str(": ");
@@ -57,29 +57,28 @@ pub fn build_commit_message(
     }
 
     println!("{}", commit_message.trim().len());
-    let result = if commit_message.trim().len() == 0 {
+
+    if commit_message.trim().is_empty() {
         None
     } else {
-        Some(String::from(commit_message))
-    };
-
-    result
+        Some(commit_message)
+    }
 }
 
-pub fn create_and_or_read_config() -> GcmConfig {
-    let mut config: GcmConfig = GcmConfig {
+pub fn create_and_or_read_config() -> GCommitConfig {
+    let mut config: GCommitConfig = GCommitConfig {
         classes: HashMap::new(),
         scopes: Vec::new(),
     };
 
-    let config_file = fs::read_to_string(".gcmconfig.yml");
+    let config_file = fs::read_to_string(".gcommit.yml");
 
     match config_file {
         Ok(value) => {
             let loaded_config = YamlLoader::load_from_str(&value).unwrap();
             for k in loaded_config.iter() {
                 if k["classes"].as_hash().into_iter().len() == 0 {
-                    panic!("No classes added in your .gcmconfig.yml file")
+                    panic!("No classes added in your .gcommit.yml file")
                 }
 
                 for (key, value) in k["classes"].as_hash().unwrap().iter() {
@@ -89,7 +88,7 @@ pub fn create_and_or_read_config() -> GcmConfig {
                     );
                 }
                 if k["scopes"].as_vec().into_iter().len() == 0 {
-                    panic!("No scopes available in your .gcmconfig.ml file")
+                    panic!("No scopes available in your .gcommitconfig.ml file")
                 } else {
                     for scope in k["scopes"].as_vec().unwrap().iter() {
                         config.scopes.push(scope.clone().into_string().unwrap());
@@ -98,7 +97,7 @@ pub fn create_and_or_read_config() -> GcmConfig {
             }
         }
         Err(_error) => {
-            println!("Found no .gcmconfig.yml, creating a default one...");
+            println!("Found no .gcommit.yml, creating a default one...");
             config = {
                 let default_config_file = r#"
 classes:
@@ -115,15 +114,14 @@ scopes:
   - docs
                 "#;
 
-                match File::create(".gcmconfig.yml") {
+                match File::create(".gcommit.yml") {
                     Ok(mut file) => &file.write_all(default_config_file.as_bytes()),
                     Err(error) => panic!("{:?}", error),
                 };
 
                 // re-read the file again to load the default configurations.
-                let default_config = create_and_or_read_config();
 
-                default_config
+                create_and_or_read_config()
             }
         }
     }
@@ -132,16 +130,16 @@ scopes:
 }
 
 pub fn validate_git_project() {
-    let git_status_ouput = Command::new("git")
-        .args(&["status"])
+    let git_status_output = Command::new("git")
+        .args(["status"])
         .output()
         .expect("failed to execute process");
 
-    if git_status_ouput.status.code() == Some(128) {
+    if git_status_output.status.code() == Some(128) {
         panic!("This is not a git project make sure to initialize it\nUse git init");
     }
 
-    let git_status_stdout = String::from_utf8_lossy(&git_status_ouput.stdout);
+    let git_status_stdout = String::from_utf8_lossy(&git_status_output.stdout);
 
     if git_status_stdout.contains("no changes added to commit") {
         panic!("Some changes were not added to commit");
