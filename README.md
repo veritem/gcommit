@@ -24,13 +24,5 @@ $ gcommit -c <type> -s <scope> -m <commit_message>
 - Commit dialog: use the commit dialog ui to make pro commit message
 - Simplicity:  So simple to make a pro commit message
 
-### Preview
-|   | |
-|--------|--------|
-| <h2><pre>&gt;_ gcommit</pre></h2> | ![Screenshot 2023-10-09 205709](https://github.com/regisrex/gcommit/assets/94565752/1b980c0f-1c76-4fae-a051-3ecb2c16ca0f)|
-| ![Screenshot 2023-10-09 205613](https://github.com/regisrex/gcommit/assets/94565752/930fb9cf-7e56-4b02-a2c6-6d3f61f752dc)|![Screenshot 2023-10-09 205834](https://github.com/regisrex/gcommit/assets/94565752/1328a76e-4d33-49a0-87b1-4a7e7929da32) |
 
-
-
-
-[MIT](./LICENSE) Licence &copy; 2022 
+[MIT](./LICENSE) License &copy; 2022 - PRESENT
