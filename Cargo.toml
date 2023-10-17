@@ -7,7 +7,7 @@ description = "A simple conventional commits maker"
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/veritem/gcommit"
-keywords = ["git", "commit", "conventional", "commits", "conventional commits"]
+keywords = ["git", "commit", "conventional", "commits"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
