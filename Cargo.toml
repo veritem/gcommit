@@ -3,7 +3,11 @@ name = "gcommit"
 version = "0.0.3"
 edition = "2021"
 authors = ["Makuza Mugabo Verite <mugaboverite@gmail.com>"]
+description = "A simple conventional commits maker"
+readme = "README.md"
 license = "MIT"
+repository = "https://github.com/veritem/gcommit"
+keywords = ["git", "commit", "conventional", "commits", "conventional commits"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
