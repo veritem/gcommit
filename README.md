@@ -4,7 +4,8 @@
 
 Conventional git commit messages done right
 ### Get started 
-1. download to your platform binary from [releases](https://github.com/veritem/gcommit/releases)
+1. install using `cargo install gcommit`
+ 
 2. basic commands 
 ```bash
 $ gcommit   // starts the commit dialog, using data in .gcommit.yml or creates one if not available 🌟
