@@ -10,10 +10,7 @@ pub fn new_commit(config: &GCommitConfig) -> String {
     let comm_scope = match commit_scope() {
         Some(scope) => match config.scopes.contains(&scope) {
             true => scope,
-            false => {
-                println!("Unknown scope, gcommit will take it as no scope provided");
-                empty_scope
-            }
+            false => scope,
         },
         None => empty_scope,
     };

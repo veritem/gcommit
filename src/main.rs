@@ -28,7 +28,6 @@ fn main() {
 
     if let Some(error) = is_project_valid {
         if error == "Some changes were not added to commit" {
-            // ask if they want to add to commit and do it
             println!("\n");
             println!("{error}");
             println!("\n");
