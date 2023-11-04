@@ -22,7 +22,14 @@ pub struct Args {
 fn main() {
     let args = Args::parse();
     let gcommit_config = create_and_or_read_config();
-    validate_git_project();
+
+    let is_project_valid = validate_git_project();
+
+    if let Some(error) = is_project_valid {
+        println!("{error}");
+        std::process::exit(0);
+    }
+
     let single_line_commit: Option<String> =
         utils::build_commit_message(&args.scope, &args.class, &args.message, &gcommit_config);
 

@@ -120,7 +120,6 @@ scopes:
                 };
 
                 // re-read the file again to load the default configurations.
-
                 create_and_or_read_config()
             }
         }
@@ -129,23 +128,25 @@ scopes:
     config
 }
 
-pub fn validate_git_project() {
+pub fn validate_git_project() -> Option<&'static str> {
     let git_status_output = Command::new("git")
         .args(["status"])
         .output()
         .expect("failed to execute process");
 
     if git_status_output.status.code() == Some(128) {
-        panic!("This is not a git project make sure to initialize it\nUse git init");
+        return Some("This is not a git project make sure to initialize it\nUse git init");
     }
 
     let git_status_stdout = String::from_utf8_lossy(&git_status_output.stdout);
 
     if git_status_stdout.contains("no changes added to commit") {
-        panic!("Some changes were not added to commit");
+        return Some("Some changes were not added to commit");
     }
 
     if git_status_stdout.contains("nothing to commit, working tree clean") {
-        panic!("No changes were made to the project");
+        return Some("No changes were made to the project");
     }
+
+    None
 }
