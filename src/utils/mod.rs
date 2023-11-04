@@ -1,9 +1,8 @@
-use std::fs::File;
+use serde::Deserialize;
+use std::collections::HashMap;
 use std::process::Command;
-use std::{collections::HashMap, fs, io::Write};
-use yaml_rust::YamlLoader;
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub struct GCommitConfig {
     pub classes: HashMap<String, String>,
     pub scopes: Vec<String>,
@@ -66,40 +65,7 @@ pub fn build_commit_message(
 }
 
 pub fn create_and_or_read_config() -> GCommitConfig {
-    let mut config: GCommitConfig = GCommitConfig {
-        classes: HashMap::new(),
-        scopes: Vec::new(),
-    };
-
-    let config_file = fs::read_to_string(".gcommit.yml");
-
-    match config_file {
-        Ok(value) => {
-            let loaded_config = YamlLoader::load_from_str(&value).unwrap();
-            for k in loaded_config.iter() {
-                if k["classes"].as_hash().into_iter().len() == 0 {
-                    panic!("No classes added in your .gcommit.yml file")
-                }
-
-                for (key, value) in k["classes"].as_hash().unwrap().iter() {
-                    config.classes.insert(
-                        key.clone().into_string().unwrap(),
-                        value.clone().into_string().unwrap(),
-                    );
-                }
-                if k["scopes"].as_vec().into_iter().len() == 0 {
-                    panic!("No scopes available in your .gcommitconfig.ml file")
-                } else {
-                    for scope in k["scopes"].as_vec().unwrap().iter() {
-                        config.scopes.push(scope.clone().into_string().unwrap());
-                    }
-                }
-            }
-        }
-        Err(_error) => {
-            println!("Found no .gcommit.yml, creating a default one...");
-            config = {
-                let default_config_file = r#"
+    let data = r#"
 classes:
   feat:  "A new feature"
   fix:   "A bug fix"
@@ -114,16 +80,7 @@ scopes:
   - docs
                 "#;
 
-                match File::create(".gcommit.yml") {
-                    Ok(mut file) => &file.write_all(default_config_file.as_bytes()),
-                    Err(error) => panic!("{:?}", error),
-                };
-
-                // re-read the file again to load the default configurations.
-                create_and_or_read_config()
-            }
-        }
-    }
+    let config: GCommitConfig = serde_yaml::from_str(data).unwrap();
 
     config
 }

@@ -2,6 +2,7 @@ use clap::Parser;
 mod cli;
 mod utils;
 use crate::utils::{create_and_or_read_config, validate_git_project};
+use inquire::Confirm;
 use std::process::Command;
 
 #[derive(Parser, Debug)]
@@ -26,8 +27,28 @@ fn main() {
     let is_project_valid = validate_git_project();
 
     if let Some(error) = is_project_valid {
-        println!("{error}");
-        std::process::exit(0);
+        if error == "Some changes were not added to commit" {
+            // ask if they want to add to commit and do it
+            println!("\n");
+            println!("{error}");
+            println!("\n");
+            let confirm = Confirm::new("Do you want to add all changes to commit?")
+                .with_default(false)
+                .prompt();
+
+            if confirm.unwrap() {
+                let commit_output = Command::new("git")
+                    .args(["add", "."])
+                    .output()
+                    .expect("failed to execute process");
+                println!("{}", String::from_utf8_lossy(&commit_output.stdout));
+            } else {
+                std::process::exit(0);
+            }
+        } else {
+            println!("{error}");
+            std::process::exit(0);
+        }
     }
 
     let single_line_commit: Option<String> =
