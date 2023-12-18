@@ -25,7 +25,7 @@ pub fn build_commit_message(
                 }
             }
             None => {
-                print!("\n");
+                println!();
                 println!(
                     "{}",
                     style("Conventional commit is all about consistency")

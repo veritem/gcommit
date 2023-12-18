@@ -9,10 +9,10 @@ pub fn new_commit(config: &GCommitConfig) -> String {
     let comm_desc = commit_description();
     let comm_body = commit_body();
 
-    let mut commit = String::from(format!("{commit_type}({commit_scope}): {comm_desc}"));
+    let mut commit = format!("{commit_type}({commit_scope}): {comm_desc}");
 
     if commit_scope.trim().is_empty() {
-        commit = String::from(format!("{commit_type}: {comm_desc}"));
+        commit = format!("{commit_type}: {comm_desc}");
     }
 
     if !comm_body.trim().is_empty() {
