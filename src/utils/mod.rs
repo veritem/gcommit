@@ -1,3 +1,4 @@
+use console::style;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::process::Command;
@@ -5,7 +6,6 @@ use std::process::Command;
 #[derive(Debug, Deserialize)]
 pub struct GCommitConfig {
     pub classes: HashMap<String, String>,
-    pub scopes: Vec<String>,
 }
 
 pub fn build_commit_message(
@@ -25,19 +25,20 @@ pub fn build_commit_message(
                 }
             }
             None => {
-                println!("Commit classification  is required to maintain git commit conventions");
+                print!("\n");
+                println!(
+                    "{}",
+                    style("Conventional commit is all about consistency")
+                        .italic()
+                        .bold()
+                );
+                println!("\n");
                 return None;
             }
         }
 
         match scope {
-            Some(s) => {
-                if config.scopes.contains(s) {
-                    commit_message.push_str(format!("({})", s).as_str())
-                } else {
-                    panic!("Scope not in configuration file")
-                }
-            }
+            Some(s) => commit_message.push_str(format!("({})", s).as_str()),
             None => {}
         }
 
@@ -64,7 +65,7 @@ pub fn build_commit_message(
     }
 }
 
-pub fn create_and_or_read_config() -> GCommitConfig {
+pub fn config() -> GCommitConfig {
     let data = r#"
 classes:
   feat:  "A new feature"
@@ -74,10 +75,6 @@ classes:
   perf:  "A code change that improves performance"
   test:  "Adding missing tests"
   chore:  "Changes to the build process or auxiliary tools and libraries "
-scopes:
-  - web
-  - api
-  - docs
                 "#;
 
     let config: GCommitConfig = serde_yaml::from_str(data).unwrap();
