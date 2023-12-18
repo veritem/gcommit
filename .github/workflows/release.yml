@@ -1,11 +1,8 @@
 name: release
 
 on:
-  push:
-    branches:
-      - '*'
-    paths-ignore:
-      - '**.md'
+  release:
+    types: [created]
 
 jobs:
   release:
@@ -29,4 +26,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUSTTARGET: ${{ matrix.target }}
           ARCHIVE_TYPES: ${{ matrix.archive }}
-          UPLOAD_MODE: none
