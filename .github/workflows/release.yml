@@ -1,8 +1,11 @@
 name: release
 
-on: [push]
-#  release:
-#    types: [created]
+on:
+  push:
+    branches:
+      - '*'
+    paths-ignore:
+      - '**.md'
 
 jobs:
   release:
@@ -19,10 +22,11 @@ jobs:
           - target: x86_64-apple-darwin
             archive: zip
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1.4.4
       - name: compile and release
         uses: rust-build/rust-build.action@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUSTTARGET: ${{ matrix.target }}
           ARCHIVE_TYPES: ${{ matrix.archive }}
+          UPLOAD_MODE: none
