@@ -1,4 +1,3 @@
-use console::style;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::process::Command;
@@ -25,14 +24,6 @@ pub fn build_commit_message(
                 }
             }
             None => {
-                println!();
-                println!(
-                    "{}",
-                    style("Conventional commit is all about consistency")
-                        .italic()
-                        .bold()
-                );
-                println!("\n");
                 return None;
             }
         }
