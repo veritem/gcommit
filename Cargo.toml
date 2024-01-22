@@ -1,6 +1,6 @@
 [package]
 name = "gcommit"
-version = "0.0.4"
+version = "0.0.9"
 edition = "2021"
 authors = ["Makuza Mugabo Verite <mugaboverite@gmail.com>"]
 description = "A simple conventional commits maker"
@@ -12,6 +12,7 @@ keywords = ["git", "commit", "conventional", "commits"]
 
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
+console = "0.15.7"
 dialoguer = "0.11.0"
 inquire = "0.6.2"
 serde = {version = "1.0.188", features = ["derive"]}

@@ -1,7 +1,8 @@
 use clap::Parser;
+use console::style;
 mod cli;
 mod utils;
-use crate::utils::{create_and_or_read_config, validate_git_project};
+use crate::utils::{config, validate_git_project};
 use inquire::Confirm;
 use std::process::Command;
 
@@ -22,7 +23,7 @@ pub struct Args {
 
 fn main() {
     let args = Args::parse();
-    let gcommit_config = create_and_or_read_config();
+    let gcommit_config = config();
 
     let is_project_valid = validate_git_project();
 
@@ -31,13 +32,17 @@ fn main() {
             println!("\n");
             println!("{error}");
             println!("\n");
-            let confirm = Confirm::new("Do you want to add all changes to commit?")
-                .with_default(false)
-                .prompt();
+
+            let confirm = Confirm::new(&format!(
+                "{}",
+                style("Do you want to add all changes to commit?").bold()
+            ))
+            .with_default(false)
+            .prompt();
 
             if confirm.unwrap() {
                 let commit_output = Command::new("git")
-                    .args(["add", "."])
+                    .args(["add", "-A"])
                     .output()
                     .expect("failed to execute process");
                 println!("{}", String::from_utf8_lossy(&commit_output.stdout));
@@ -46,7 +51,7 @@ fn main() {
             }
         } else {
             println!("{error}");
-            std::process::exit(0);
+            std::process::exit(1);
         }
     }
 
@@ -57,6 +62,7 @@ fn main() {
         Some(s) => s,
         None => cli::new_commit(&gcommit_config),
     };
+
     let commit_output = Command::new("git")
         .args(["commit", "-m", &commit_message])
         .output()
