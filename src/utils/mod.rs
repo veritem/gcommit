@@ -1,3 +1,5 @@
+use console::style;
+use inquire::Confirm;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::process::Command;
@@ -57,6 +59,7 @@ pub fn build_commit_message(
 }
 
 pub fn config() -> GCommitConfig {
+    //TODO(@veritem): make this dynamic or sort of configurable
     let data = r#"
 classes:
   feat:  "A new feature"
@@ -94,4 +97,28 @@ pub fn validate_git_project() -> Option<&'static str> {
     }
 
     None
+}
+
+pub fn add_to_commit() {
+    let confirm = Confirm::new(&format!(
+        "{}",
+        style("Do you want to add all changes to commit?").bold()
+    ))
+    .with_default(false)
+    .prompt();
+
+    if confirm.unwrap() {
+        let commit_output = Command::new("git")
+            .args(["add", "-A"])
+            .output()
+            .expect("failed to execute process");
+
+        if commit_output.status.success() {
+            println!("{}", String::from_utf8_lossy(&commit_output.stdout));
+        } else {
+            println!("Something weird happened");
+        }
+    } else {
+        std::process::exit(0);
+    }
 }
