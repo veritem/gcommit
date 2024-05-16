@@ -50,7 +50,8 @@ fn main() {
         .expect("failed to execute process");
 
     if commit_output.status.success() {
-        println!("changes were committed!");
+        println!("changes were committed!\n");
+        println!("{}", String::from_utf8_lossy(&commit_output.stdout));
     } else if !commit_output.status.success() {
         println!("Failed to commit changes");
         println!("{}", String::from_utf8_lossy(&commit_output.stdout));
