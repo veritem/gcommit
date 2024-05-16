@@ -1,9 +1,7 @@
 use clap::Parser;
-use console::style;
 mod cli;
 mod utils;
 use crate::utils::{config, validate_git_project};
-use inquire::Confirm;
 use std::process::Command;
 
 #[derive(Parser, Debug)]
@@ -29,26 +27,9 @@ fn main() {
 
     if let Some(error) = is_project_valid {
         if error == "Some changes were not added to commit" {
-            println!("\n");
-            println!("{error}");
-            println!("\n");
+            println!("\n{error}\n");
 
-            let confirm = Confirm::new(&format!(
-                "{}",
-                style("Do you want to add all changes to commit?").bold()
-            ))
-            .with_default(false)
-            .prompt();
-
-            if confirm.unwrap() {
-                let commit_output = Command::new("git")
-                    .args(["add", "-A"])
-                    .output()
-                    .expect("failed to execute process");
-                println!("{}", String::from_utf8_lossy(&commit_output.stdout));
-            } else {
-                std::process::exit(0);
-            }
+            utils::add_to_commit();
         } else {
             println!("{error}");
             std::process::exit(1);
@@ -67,5 +48,12 @@ fn main() {
         .args(["commit", "-m", &commit_message])
         .output()
         .expect("failed to execute process");
-    println!("{}", String::from_utf8_lossy(&commit_output.stdout));
+
+    if commit_output.status.success() {
+        println!("changes were committed!\n");
+        println!("{}", String::from_utf8_lossy(&commit_output.stdout));
+    } else if !commit_output.status.success() {
+        println!("Failed to commit changes");
+        println!("{}", String::from_utf8_lossy(&commit_output.stdout));
+    }
 }
