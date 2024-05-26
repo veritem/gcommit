@@ -2,7 +2,7 @@
 [![ci](https://github.com/veritem/gcommit/actions/workflows/ci.yml/badge.svg)](https://github.com/veritem/gcommit/actions/workflows/ci.yml)
 ![release](https://shields.io/github/v/release/veritem/gcommit)
 
-This CLI tool intends to help you stay consistent with your git commit messages, famously known us [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). It's like [cz](https://github.com/commitizen/cz-cli), but it's more straightforward and intuitive. 
+This CLI tool intends to help you stay consistent with your git commit messages using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style. It's like [cz](https://github.com/commitizen/cz-cli), but it's more straightforward, intuitive and configurable. 
 
 #### Getting started 
 1. install using `cargo install gcommit`
